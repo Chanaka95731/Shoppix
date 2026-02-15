@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Shoppix</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#b08d0a',
+                    },
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="text-black">
+    <nav class="bg-white py-4 shadow-sm border-b">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold flex items-center gap-2 text-black">
+                <span class="text-primary">S</span>hoppix Admin
+            </a>
+            <a href="shop.html" class="text-gray-500 hover:text-primary transition flex items-center gap-2">
+                <i data-lucide="eye" class="w-4 h-4"></i> View Site
+            </a>
+        </div>
+    </nav>
+
+    <main class="py-12">
+        <div class="container mx-auto px-6">
+            <div class="grid lg:grid-cols-3 gap-12">
+                <!-- Product Form (Add/Edit) -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white p-8 rounded-3xl shadow-xl border border-gray-100 mb-8">
+                        <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                            <i data-lucide="tag" class="text-primary"></i> Manage Categories
+                        </h2>
+                        <div class="flex gap-2 mb-6">
+                            <input type="text" id="new-category-name" placeholder="New Category Name"
+                                class="flex-grow p-3 border rounded-xl outline-none focus:border-primary">
+                            <button id="add-category-btn"
+                                class="bg-primary text-white px-6 py-3 rounded-xl font-bold hover:opacity-90 transition">
+                                Add
+                            </button>
+                        </div>
+                        <div id="category-list" class="flex flex-wrap gap-2">
+                            <!-- Categories will be injected here -->
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-3xl shadow-xl border border-gray-100 sticky top-12">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 id="form-title" class="text-2xl font-bold flex items-center gap-2">
+                                <i data-lucide="plus-circle" class="text-primary"></i> Add New Item
+                            </h2>
+                            <button id="cancel-edit" class="hidden text-sm text-red-500 hover:underline">Cancel
+                                Edit</button>
+                        </div>
+                        <form id="admin-product-form" class="space-y-4">
+                            <input type="hidden" id="p-id">
+                            <div>
+                                <label class="block text-sm font-semibold mb-1">Product Name</label>
+                                <input type="text" id="p-name" required
+                                    class="w-full p-3 border rounded-xl outline-none focus:border-primary">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-semibold mb-1">Price ($)</label>
+                                    <input type="number" id="p-price" required
+                                        class="w-full p-3 border rounded-xl outline-none focus:border-primary">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold mb-1">Delivery ($)</label>
+                                    <input type="number" id="p-delivery" value="0"
+                                        class="w-full p-3 border rounded-xl outline-none focus:border-primary">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-1">Category</label>
+                                <select id="p-category"
+                                    class="w-full p-3 border rounded-xl outline-none focus:border-primary">
+                                    <!-- Options will be injected dynamically -->
+                                </select>
+                            </div>
+                            <div class="space-y-4">
+                                <label class="block text-sm font-semibold mb-1">Product Images (Direct Upload)</label>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="space-y-2">
+                                        <div class="relative group cursor-pointer border-2 border-dashed rounded-2xl aspect-square flex flex-center items-center justify-center overflow-hidden hover:border-primary transition"
+                                            onclick="document.getElementById('p-file-1').click()">
+                                            <img id="img-preview-1"
+                                                class="absolute inset-0 w-full h-full object-cover hidden">
+                                            <div id="placeholder-1" class="text-center">
+                                                <i data-lucide="image-plus"
+                                                    class="mx-auto text-gray-400 group-hover:text-primary mb-1"></i>
+                                                <p class="text-[10px] text-gray-500">Main Photo</p>
+                                            </div>
+                                        </div>
+                                        <input type="file" id="p-file-1" accept="image/*" class="hidden"
+                                            onchange="previewImage(this, 1)">
+                                    </div>
+                                    <div class="space-y-2">
+                                        <div class="relative group cursor-pointer border-2 border-dashed rounded-2xl aspect-square flex items-center justify-center overflow-hidden hover:border-primary transition"
+                                            onclick="document.getElementById('p-file-2').click()">
+                                            <img id="img-preview-2"
+                                                class="absolute inset-0 w-full h-full object-cover hidden">
+                                            <div id="placeholder-2" class="text-center">
+                                                <i data-lucide="image-plus"
+                                                    class="mx-auto text-gray-400 group-hover:text-primary mb-1"></i>
+                                                <p class="text-[10px] text-gray-500">Photo 2</p>
+                                            </div>
+                                        </div>
+                                        <input type="file" id="p-file-2" accept="image/*" class="hidden"
+                                            onchange="previewImage(this, 2)">
+                                    </div>
+                                    <div class="space-y-2">
+                                        <div class="relative group cursor-pointer border-2 border-dashed rounded-2xl aspect-square flex items-center justify-center overflow-hidden hover:border-primary transition"
+                                            onclick="document.getElementById('p-file-3').click()">
+                                            <img id="img-preview-3"
+                                                class="absolute inset-0 w-full h-full object-cover hidden">
+                                            <div id="placeholder-3" class="text-center">
+                                                <i data-lucide="image-plus"
+                                                    class="mx-auto text-gray-400 group-hover:text-primary mb-1"></i>
+                                                <p class="text-[10px] text-gray-500">Photo 3</p>
+                                            </div>
+                                        </div>
+                                        <input type="file" id="p-file-3" accept="image/*" class="hidden"
+                                            onchange="previewImage(this, 3)">
+                                    </div>
+                                    <div class="space-y-2">
+                                        <div class="relative group cursor-pointer border-2 border-dashed rounded-2xl aspect-square flex items-center justify-center overflow-hidden hover:border-primary transition"
+                                            onclick="document.getElementById('p-file-4').click()">
+                                            <img id="img-preview-4"
+                                                class="absolute inset-0 w-full h-full object-cover hidden">
+                                            <div id="placeholder-4" class="text-center">
+                                                <i data-lucide="image-plus"
+                                                    class="mx-auto text-gray-400 group-hover:text-primary mb-1"></i>
+                                                <p class="text-[10px] text-gray-500">Photo 4</p>
+                                            </div>
+                                        </div>
+                                        <input type="file" id="p-file-4" accept="image/*" class="hidden"
+                                            onchange="previewImage(this, 4)">
+                                    </div>
+                                </div>
+                                <p class="text-[10px] text-gray-400 mt-2 italic">Tip: Use small files for best
+                                    performance.</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-1">Description</label>
+                                <textarea id="p-desc" rows="3"
+                                    class="w-full p-3 border rounded-xl outline-none focus:border-primary"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-1">Key Features (One per line)</label>
+                                <textarea id="p-features" rows="3"
+                                    class="w-full p-3 border rounded-xl outline-none focus:border-primary"></textarea>
+                            </div>
+                            <button type="submit" id="submit-btn"
+                                class="w-full bg-primary text-white py-4 rounded-xl font-bold hover:opacity-90 transition shadow-lg">
+                                Add Product
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Product List -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white p-8 rounded-3xl shadow-xl border border-gray-100">
+                        <div class="flex justify-between items-center mb-8">
+                            <h2 class="text-2xl font-bold">Manage Inventory</h2>
+                            <p class="text-gray-500" id="item-count">0 items found</p>
+                        </div>
+                        <div id="admin-product-list" class="space-y-4">
+                            <!-- Items will be injected here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="assets/js/main.js"></script>
+    <script>
+        const form = document.getElementById('admin-product-form');
+        const list = document.getElementById('admin-product-list');
+        const itemCount = document.getElementById('item-count');
+        const formTitle = document.getElementById('form-title');
+        const submitBtn = document.getElementById('submit-btn');
+        const cancelBtn = document.getElementById('cancel-edit');
+        const idInput = document.getElementById('p-id');
+
+        let isEditMode = false;
+        let uploadedImages = [];
+
+        function previewImage(input, index) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const preview = document.getElementById(`img-preview-${index}`);
+                const placeholder = document.getElementById(`placeholder-${index}`);
+                preview.src = e.target.result;
+                preview.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+                uploadedImages[index - 1] = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function renderAdminProducts() {
+            const products = JSON.parse(localStorage.getItem('shoppix_products')) || [];
+            itemCount.textContent = `${products.length} items found`;
+
+            list.innerHTML = products.map(p => `
+                <div class="flex items-center justify-between p-4 border rounded-2xl hover:border-primary transition group bg-gray-50">
+                    <div class="flex items-center gap-4">
+                        <img src="${(p.images && p.images[0]) || p.image || 'assets/images/placeholder.jpg'}" class="w-16 h-16 object-cover rounded-lg border">
+                        <div>
+                            <h3 class="font-bold">${p.name}</h3>
+                            <p class="text-sm text-gray-500">${p.category} • $${p.price}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="editProduct(${p.id})" class="p-2 text-gray-400 hover:text-primary transition">
+                            <i data-lucide="edit-3"></i>
+                        </button>
+                        <button onclick="handleDelete(${p.id})" class="p-2 text-gray-400 hover:text-red-500 transition">
+                            <i data-lucide="trash-2"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            // Clean up the images array - keep existing if no new ones uploaded in edit mode
+            const products = JSON.parse(localStorage.getItem('shoppix_products')) || [];
+            const existingProduct = products.find(p => p.id == idInput.value);
+            const finalImages = uploadedImages.length > 0 ? uploadedImages.filter(img => img) : (existingProduct?.images || []);
+
+            const productData = {
+                name: document.getElementById('p-name').value,
+                price: document.getElementById('p-price').value,
+                deliveryFee: document.getElementById('p-delivery').value,
+                category: document.getElementById('p-category').value,
+                images: finalImages,
+                description: document.getElementById('p-desc').value,
+                features: document.getElementById('p-features').value.split('\n').filter(f => f.trim())
+            };
+
+            if (isEditMode) {
+                updateProduct(Number(idInput.value), productData);
+                showNotification('Product updated!');
+                resetForm();
+            } else {
+                addProduct(productData);
+                showNotification('Product created!');
+                resetForm();
+            }
+
+            renderAdminProducts();
+        });
+
+        function editProduct(id) {
+            const products = JSON.parse(localStorage.getItem('shoppix_products')) || [];
+            const p = products.find(prod => prod.id == id);
+            if (!p) return;
+
+            isEditMode = true;
+            idInput.value = p.id;
+            document.getElementById('p-name').value = p.name;
+            document.getElementById('p-price').value = p.price;
+            document.getElementById('p-delivery').value = p.deliveryFee || 0;
+            document.getElementById('p-category').value = p.category;
+            document.getElementById('p-desc').value = p.description || '';
+            document.getElementById('p-features').value = (p.features || []).join('\n');
+
+            // Populate images previews
+            uploadedImages = [...(p.images || [p.image])];
+            for (let i = 1; i <= 4; i++) {
+                const imgUrl = uploadedImages[i - 1];
+                const preview = document.getElementById(`img-preview-${i}`);
+                const placeholder = document.getElementById(`placeholder-${i}`);
+                if (imgUrl) {
+                    preview.src = imgUrl;
+                    preview.classList.remove('hidden');
+                    placeholder.classList.add('hidden');
+                } else {
+                    preview.src = '';
+                    preview.classList.add('hidden');
+                    placeholder.classList.remove('hidden');
+                }
+            }
+
+            formTitle.innerHTML = `<i data-lucide="edit-3" class="text-primary"></i> Edit Item`;
+            submitBtn.textContent = 'Save Changes';
+            cancelBtn.classList.remove('hidden');
+            lucide.createIcons();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        cancelBtn.addEventListener('click', resetForm);
+
+        function resetForm() {
+            isEditMode = false;
+            form.reset();
+            idInput.value = '';
+            uploadedImages = [];
+
+            // Reset previews
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById(`img-preview-${i}`).classList.add('hidden');
+                document.getElementById(`placeholder-${i}`).classList.remove('hidden');
+                document.getElementById(`p-file-${i}`).value = ''; // Clear file input
+            }
+
+            formTitle.innerHTML = `<i data-lucide="plus-circle" class="text-primary"></i> Add New Item`;
+            submitBtn.textContent = 'Add Product';
+            cancelBtn.classList.add('hidden');
+            lucide.createIcons();
+        }
+
+        function handleDelete(id) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                deleteProduct(id);
+                renderAdminProducts();
+                showNotification('Product removed');
+            }
+        }
+
+        const categoryList = document.getElementById('category-list');
+        const newCategoryInput = document.getElementById('new-category-name');
+        const addCategoryBtn = document.getElementById('add-category-btn');
+        const categorySelect = document.getElementById('p-category');
+
+        function renderCategories() {
+            const categories = JSON.parse(localStorage.getItem('shoppix_categories')) || ['Smartphones', 'Audio', 'Wearables', 'Watches', 'Electronics'];
+
+            // Render category tags
+            categoryList.innerHTML = categories.map(c => `
+                <div class="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full border">
+                    <span class="text-sm font-medium">${c}</span>
+                    <button onclick="handleDeleteCategory('${c}')" class="text-gray-400 hover:text-red-500">
+                        <i data-lucide="x" class="w-3 h-3"></i>
+                    </button>
+                </div>
+            `).join('');
+
+            // Update product form select
+            categorySelect.innerHTML = categories.map(c => `
+                <option value="${c}">${c}</option>
+            `).join('');
+
+            lucide.createIcons();
+        }
+
+        addCategoryBtn.addEventListener('click', () => {
+            const name = newCategoryInput.value.trim();
+            if (name) {
+                if (addCategory(name)) {
+                    newCategoryInput.value = '';
+                    renderCategories();
+                    showNotification('Category added!');
+                } else {
+                    alert('Category already exists');
+                }
+            }
+        });
+
+        function handleDeleteCategory(name) {
+            if (confirm(`Delete category "${name}"? This will not delete products in this category.`)) {
+                deleteCategory(name);
+                renderCategories();
+                showNotification('Category removed');
+            }
+        }
+
+        renderAdminProducts();
+        renderCategories();
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>

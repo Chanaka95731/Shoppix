@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | Shoppix</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .method-card.active {
+            border-color: #d4af37;
+            background: rgba(212, 175, 55, 0.05);
+        }
+    </style>
+</head>
+
+<body class="text-gray-900">
+    <nav class="bg-white py-4 shadow-sm">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold text-black flex items-center gap-2">
+                <span class="text-primary">S</span>hoppix
+            </a>
+            <a href="cart.html" class="text-gray-500 hover:text-shoppixGold flex items-center gap-2 transition">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Cart
+            </a>
+        </div>
+    </nav>
+
+    <main class="py-12 md:py-20">
+        <div class="container mx-auto px-6 max-w-6xl">
+            <h1 class="text-4xl font-bold mb-12">Checkout</h1>
+
+            <form id="checkout-form" class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Left: Shipping & Payment -->
+                <div class="space-y-12">
+                    <section class="space-y-6">
+                        <h2 class="text-2xl font-bold flex items-center gap-2">
+                            <i data-lucide="truck" class="text-shoppixGold"></i> Shipping Information
+                        </h2>
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="text" placeholder="First Name" required
+                                class="col-span-1 p-3 border rounded-lg outline-hidden focus:border-shoppixGold">
+                            <input type="text" placeholder="Last Name" required
+                                class="col-span-1 p-3 border rounded-lg outline-hidden focus:border-shoppixGold">
+                            <input type="email" placeholder="Email Address" required
+                                class="col-span-2 p-3 border rounded-lg outline-hidden focus:border-shoppixGold">
+                            <input type="text" placeholder="Shipping Address" required
+                                class="col-span-2 p-3 border rounded-lg outline-hidden focus:border-shoppixGold">
+                        </div>
+                    </section>
+
+                    <section class="space-y-6">
+                        <h2 class="text-2xl font-bold flex items-center gap-2">
+                            <i data-lucide="credit-card" class="text-shoppixGold"></i> Payment Method
+                        </h2>
+                        <div class="grid grid-cols-2 gap-4">
+                            <!-- Card Option -->
+                            <label
+                                class="method-card active cursor-pointer p-4 border-2 rounded-xl flex flex-col items-center gap-3 transition"
+                                onclick="selectPayment('card')">
+                                <input type="radio" name="payment" value="card" checked class="hidden">
+                                <i data-lucide="credit-card" class="w-8 h-8 text-gray-400"></i>
+                                <span class="font-bold">Credit Card</span>
+                            </label>
+                            <!-- PayPal Option -->
+                            <label
+                                class="method-card cursor-pointer p-4 border-2 rounded-xl flex flex-col items-center gap-3 transition"
+                                onclick="selectPayment('paypal')">
+                                <input type="radio" name="payment" value="paypal" class="hidden">
+                                <i data-lucide="send" class="w-8 h-8 text-gray-400"></i>
+                                <span class="font-bold">PayPal</span>
+                            </label>
+                        </div>
+
+                        <!-- Card Details (Hidden if PayPal) -->
+                        <div id="card-details" class="space-y-4 p-6 bg-gray-100 rounded-xl">
+                            <input type="text" placeholder="Card Number"
+                                class="w-full p-3 border rounded-lg outline-hidden">
+                            <div class="grid grid-cols-2 gap-4">
+                                <input type="text" placeholder="MM/YY" class="p-3 border rounded-lg outline-hidden">
+                                <input type="text" placeholder="CVV" class="p-3 border rounded-lg outline-hidden">
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Right: Order Review -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 sticky top-32">
+                        <h2 class="text-xl font-bold mb-6">Order Summary</h2>
+                        <div id="checkout-items" class="space-y-4 mb-8 max-h-64 overflow-y-auto pr-2">
+                            <!-- Items show up here -->
+                        </div>
+                        <div class="space-y-4 mb-8 pt-6 border-t font-medium">
+                            <div class="flex justify-between text-gray-500">
+                                <span>Subtotal</span>
+                                <span id="checkout-subtotal">$0.00</span>
+                            </div>
+                            <div class="flex justify-between font-bold text-2xl pt-4 border-t">
+                                <span>Total</span>
+                                <span id="checkout-total">$0.00</span>
+                            </div>
+                        </div>
+                        <button type="submit"
+                            class="w-full bg-shoppixGold text-white py-4 rounded-xl font-bold hover:bg-yellow-600 transition shadow-lg flex items-center justify-center gap-2">
+                            Place Order <i data-lucide="lock" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Success Modal -->
+    <div id="success-modal"
+        class="fixed inset-0 z-100 hidden flex items-center justify-center bg-black/60 backdrop-blur-sm">
+        <div class="bg-white p-10 rounded-3xl text-center max-w-sm space-y-6">
+            <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto">
+                <i data-lucide="check-circle" class="w-10 h-10"></i>
+            </div>
+            <h2 class="text-3xl font-bold">Thank You!</h2>
+            <p class="text-gray-500">Your order #SPX-00124 has been placed successfully.</p>
+            <a href="index.html" class="block w-full bg-primary text-white py-3 rounded-xl font-bold">Back to Home</a>
+        </div>
+    </div>
+
+    <script src="assets/js/main.js"></script>
+    <script>
+        function selectPayment(id) {
+            document.querySelectorAll('.method-card').forEach(c => c.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            const cardDetails = document.getElementById('card-details');
+            cardDetails.style.display = (id === 'card') ? 'block' : 'none';
+        }
+
+        function renderCheckout() {
+            const itemsList = document.getElementById('checkout-items');
+            const subtotalEl = document.getElementById('checkout-subtotal');
+            const totalEl = document.getElementById('checkout-total');
+
+            itemsList.innerHTML = cart.map(item => `
+                <div class="flex justify-between text-sm">
+                    <span>${item.name} x ${item.quantity}</span>
+                    <span class="font-bold">$${(item.price * item.quantity).toFixed(2)}</span>
+                </div>
+            `).join('');
+
+            const total = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+            subtotalEl.textContent = `$${total.toFixed(2)}`;
+            totalEl.textContent = `$${total.toFixed(2)}`;
+        }
+
+        document.getElementById('checkout-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Simulate Payment Processing
+            const btn = e.target.querySelector('button');
+            btn.innerHTML = '<i data-lucide="loader" class="animate-spin"></i> Processing...';
+            lucide.createIcons();
+
+            setTimeout(() => {
+                localStorage.removeItem('shoppix_cart');
+                document.getElementById('success-modal').classList.remove('hidden');
+            }, 2000);
+        });
+
+        renderCheckout();
+        lucide.createIcons();
+    </script>
+    <!-- Minimal Footer -->
+    <footer class="bg-white border-t py-12">
+        <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="flex flex-col gap-2">
+                <a href="#" class="text-2xl font-bold">
+                    <span class="text-primary">S</span>hoppix
+                </a>
+                <div class="text-sm text-gray-500 space-y-1">
+                    <p class="flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4"></i> Shoppix@gmail.com</p>
+                    <p class="flex items-center gap-2"><i data-lucide="phone" class="w-4 h-4"></i> 124568795</p>
+                </div>
+            </div>
+            <div class="flex gap-8 text-gray-500 font-medium">
+                <a href="#" class="hover:text-primary transition">Privacy Policy</a>
+                <a href="#" class="hover:text-primary transition">Terms of Service</a>
+                <a href="mailto:shoppix@gmail.com" class="hover:text-primary transition">Support</a>
+            </div>
+            <p class="text-gray-400 text-sm">&copy; 2026 Shoppix. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+
+</html>

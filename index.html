@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shoppix | Premium Online Shopping</title>
+    <meta name="description" content="Discover premium products at Shoppix. Your ultimate e-commerce destination.">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#b08d0a',
+                        shoppixGold: '#b08d0a',
+                    },
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="text-gray-900">
+    <!-- Simple Header -->
+    <header class="shoppix-header sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex items-center justify-between">
+            <a href="index.html" class="text-2xl font-bold flex items-center gap-2">
+                <span class="text-primary">S</span>hoppix
+            </a>
+
+            <div class="hidden md:flex items-center gap-8 font-medium">
+                <a href="index.html" class="hover:text-primary transition">Home</a>
+                <a href="shop.html" class="hover:text-primary transition">All Products</a>
+                <a href="admin.html" class="hover:text-primary transition">Admin</a>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <a href="cart.html" class="relative p-2 hover:bg-gray-100 rounded-full transition">
+                    <i data-lucide="shopping-cart" class="w-6 h-6"></i>
+                    <span
+                        class="cart-count absolute top-0 right-0 bg-primary text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
+                </a>
+                <button class="md:hidden p-2">
+                    <i data-lucide="menu"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Simple Hero -->
+    <section class="hero-gradient py-20">
+        <div class="container mx-auto px-6 text-center space-y-6">
+            <span class="text-primary font-bold tracking-widest uppercase text-sm">Welcome to Shoppix</span>
+            <h1 class="text-5xl md:text-6xl font-bold text-gray-900">Simply Premium. <br> Simply Yours.</h1>
+            <p class="text-gray-600 text-lg max-w-2xl mx-auto">Discover a curated collection of premium gadgets and
+                electronics, organized just the way you like them.</p>
+            <div class="flex justify-center gap-4">
+                <a href="#categories" class="btn-primary">Browse Categories</a>
+                <a href="shop.html"
+                    class="bg-white border border-gray-200 px-8 py-3 rounded-xl font-bold hover:bg-gray-50 transition">View
+                    All</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Category Section -->
+    <section id="categories" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold mb-4">Shop by Category</h2>
+                <div class="w-20 h-1 bg-primary mx-auto rounded-full"></div>
+            </div>
+
+            <div id="dynamic-category-grid" class="grid grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Categories will be injected here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products Section -->
+    <section class="py-20 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <div class="flex justify-between items-end mb-12">
+                <div>
+                    <h2 class="text-3xl font-bold">Featured Arrival</h2>
+                    <p class="text-gray-500">Handpicked for you</p>
+                </div>
+                <a href="shop.html" class="text-primary font-bold flex items-center gap-1">View All <i
+                        data-lucide="arrow-right" class="w-4 h-4"></i></a>
+            </div>
+
+            <div id="featured-products" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Products will be injected here via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Minimal Footer -->
+    <footer class="bg-white border-t py-12">
+        <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="flex flex-col gap-2">
+                <a href="#" class="text-2xl font-bold">
+                    <span class="text-primary">S</span>hoppix
+                </a>
+                <div class="text-sm text-gray-500 space-y-1">
+                    <p class="flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4"></i> Shoppix@gmail.com</p>
+                    <p class="flex items-center gap-2"><i data-lucide="phone" class="w-4 h-4"></i> 124568795</p>
+                </div>
+            </div>
+            <div class="flex gap-8 text-gray-500 font-medium">
+                <a href="#" class="hover:text-primary transition">Privacy Policy</a>
+                <a href="#" class="hover:text-primary transition">Terms of Service</a>
+                <a href="mailto:shoppix@gmail.com" class="hover:text-primary transition">Support</a>
+            </div>
+            <p class="text-gray-400 text-sm">&copy; 2026 Shoppix. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="assets/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            renderHomepage();
+        });
+
+        function renderHomepage() {
+            const categories = JSON.parse(localStorage.getItem('shoppix_categories')) || ['Smartphones', 'Audio', 'Wearables', 'Watches', 'Electronics'];
+            const products = JSON.parse(localStorage.getItem('shoppix_products')) || [];
+
+            // Render categories
+            const categoryGrid = document.getElementById('dynamic-category-grid');
+            categoryGrid.innerHTML = categories.map(c => `
+                <a href="shop.html?category=${c}" class="category-card group">
+                    <div class="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition">
+                        <i data-lucide="package" class="text-primary"></i>
+                    </div>
+                    <h3 class="font-bold text-lg">${c}</h3>
+                    <p class="text-gray-500 text-sm">${products.filter(p => p.category === c).length} Products</p>
+                </a>
+            `).join('');
+
+            // Render featured products (latest 4)
+            const featuredGrid = document.getElementById('featured-products');
+            const latestProducts = products.slice(-4).reverse();
+            featuredGrid.innerHTML = latestProducts.map(p => `
+                <div class="product-card group cursor-pointer" onclick="location.href='shop.html#product-${p.id}'">
+                    <div class="aspect-square bg-gray-100 overflow-hidden relative">
+                        <img src="${(p.images && p.images[0]) || 'assets/images/placeholder.jpg'}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                    </div>
+                    <div class="p-6">
+                        <p class="text-xs text-primary font-bold uppercase tracking-wider mb-2">${p.category}</p>
+                        <h3 class="font-bold text-lg mb-2">${p.name}</h3>
+                        <p class="text-gray-900 font-bold">$${p.price}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            lucide.createIcons();
+        }
+    </script>
+
+    <script src="assets/js/main.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>

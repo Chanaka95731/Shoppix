@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Profile | Shoppix</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+    <!-- Same Header -->
+    <header class="shoppix-header bg-white sticky top-0 z-50 border-b">
+        <div class="container mx-auto px-6 py-4 flex items-center justify-between">
+            <a href="index.html" class="text-2xl font-bold flex items-center gap-2">
+                <span class="text-primary">S</span>hoppix
+            </a>
+
+            <div class="hidden md:flex items-center gap-8 font-medium">
+                <a href="index.html" class="hover:text-primary transition">Home</a>
+                <a href="shop.html" class="hover:text-primary transition">All Products</a>
+                <a href="admin.html" class="hover:text-primary transition">Admin</a>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <a href="cart.html" class="relative p-2 hover:bg-gray-100 rounded-full transition">
+                    <i data-lucide="shopping-cart" class="w-6 h-6"></i>
+                    <span
+                        class="cart-count absolute top-0 right-0 bg-primary text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
+                </a>
+                <button onclick="logout()" class="text-sm font-bold text-gray-600 hover:text-red-500 transition">Sign
+                    Out</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="py-12 md:py-20">
+        <div class="container mx-auto px-6 max-w-4xl">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
+                <div>
+                    <h1 class="text-4xl font-bold mb-2">Your Account</h1>
+                    <p class="text-gray-500">Manage your profile and settings</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="p-8 border-b">
+                    <h2 class="text-xl font-bold mb-6">Profile Information</h2>
+                    <form id="profile-form" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="block text-sm font-bold text-gray-700">Full Name</label>
+                            <input type="text" id="fullName" required
+                                class="w-full p-3 border rounded-xl outline-hidden focus:border-primary">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-sm font-bold text-gray-700">Email Address</label>
+                            <input type="email" id="email" readonly
+                                class="w-full p-3 border rounded-xl bg-gray-50 outline-hidden">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-sm font-bold text-gray-700">Mobile Number</label>
+                            <input type="tel" id="mobile" required
+                                class="w-full p-3 border rounded-xl outline-hidden focus:border-primary">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-sm font-bold text-gray-700">Birthday</label>
+                            <input type="date" id="birthday" required
+                                class="w-full p-3 border rounded-xl outline-hidden focus:border-primary">
+                        </div>
+                        <div class="md:col-span-2 pt-4">
+                            <button type="submit"
+                                class="bg-primary hover:bg-yellow-600 text-white font-bold py-3 px-8 rounded-xl transition shadow-lg">
+                                Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="p-8 bg-gray-50">
+                    <h3 class="font-bold text-red-600 mb-2">Account Control</h3>
+                    <p class="text-sm text-gray-500 mb-4">Once you sign out, you will need to sign back in to access
+                        your orders and profile.</p>
+                    <button onclick="logout()"
+                        class="border border-red-200 text-red-600 hover:bg-red-50 px-6 py-2 rounded-lg font-bold transition">
+                        Sign Out of Account
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Minimal Footer -->
+    <footer class="bg-white border-t py-12">
+        <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="flex flex-col gap-2">
+                <a href="#" class="text-2xl font-bold">
+                    <span class="text-primary">S</span>hoppix
+                </a>
+                <div class="text-sm text-gray-500 space-y-1">
+                    <p class="flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4"></i> Shoppix@gmail.com</p>
+                    <p class="flex items-center gap-2"><i data-lucide="phone" class="w-4 h-4"></i> 124568795</p>
+                </div>
+            </div>
+            <div class="flex gap-8 text-gray-500 font-medium">
+                <a href="#" class="hover:text-primary transition">Privacy Policy</a>
+                <a href="#" class="hover:text-primary transition">Terms of Service</a>
+                <a href="mailto:shoppix@gmail.com" class="hover:text-primary transition">Support</a>
+            </div>
+            <p class="text-gray-400 text-sm">&copy; 2026 Shoppix. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="assets/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!currentUser) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Fill form
+            document.getElementById('fullName').value = currentUser.fullName;
+            document.getElementById('email').value = currentUser.email;
+            document.getElementById('mobile').value = currentUser.mobile;
+            document.getElementById('birthday').value = currentUser.birthday;
+
+            document.getElementById('profile-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const updatedData = {
+                    fullName: document.getElementById('fullName').value,
+                    mobile: document.getElementById('mobile').value,
+                    birthday: document.getElementById('birthday').value
+                };
+
+                if (updateProfile(updatedData)) {
+                    showNotification('Profile updated successfully!');
+                }
+            });
+        });
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>

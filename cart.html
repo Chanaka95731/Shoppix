@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart | Shoppix</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body class="text-gray-900">
+    <!-- Navbar (Simplified for checkout focus) -->
+    <nav class="bg-white py-4 shadow-sm">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold text-black flex items-center gap-2">
+                <span class="text-primary">S</span>hoppix
+            </a>
+            <a href="shop.html" class="text-gray-500 hover:text-shoppixGold flex items-center gap-2 transition">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i> Continue Shopping
+            </a>
+        </div>
+    </nav>
+
+    <main class="py-12 md:py-20">
+        <div class="container mx-auto px-6">
+            <h1 class="text-4xl font-bold mb-12">Shopping Cart</h1>
+
+            <div id="cart-content" class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                <!-- Cart Items -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div id="cart-items-list" class="space-y-6">
+                        <!-- Dynamic items will be injected here -->
+                        <div class="text-center py-20 bg-white rounded-2xl border border-dashed border-gray-300">
+                            <p class="text-gray-500 mb-4">Your cart is empty</p>
+                            <a href="shop.html" class="bg-shoppixGold text-white px-8 py-2 rounded-lg font-bold">Start
+                                Shopping</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 sticky top-32">
+                        <h2 class="text-xl font-bold mb-6">Order Summary</h2>
+                        <div class="space-y-4 mb-8">
+                            <div class="flex justify-between text-gray-500">
+                                <span>Subtotal</span>
+                                <span id="cart-subtotal">$0.00</span>
+                            </div>
+                            <div class="flex justify-between text-gray-500">
+                                <span>Shipping</span>
+                                <span>Free</span>
+                            </div>
+                            <div class="flex justify-between font-bold text-xl pt-4 border-t">
+                                <span>Total</span>
+                                <span id="cart-total">$0.00</span>
+                            </div>
+                        </div>
+                        <a href="checkout.html"
+                            class="w-full bg-primary text-white py-4 rounded-xl font-bold hover:bg-slate-800 transition shadow-lg inline-block text-center">
+                            Proceed to Checkout
+                        </a>
+                        <p class="text-center text-xs text-gray-400 mt-4">Safe & Secure Checkout Guaranteed</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="assets/js/main.js"></script>
+    <script>
+        // Specific Cart Page Logic
+        function renderCart() {
+            const list = document.getElementById('cart-items-list');
+            const subtotalEl = document.getElementById('cart-subtotal');
+            const totalEl = document.getElementById('cart-total');
+
+            if (cart.length === 0) return;
+
+            list.innerHTML = cart.map(item => `
+                <div class="bg-white p-6 rounded-2xl flex items-center justify-between border border-gray-100 shadow-sm">
+                    <div class="flex items-center gap-6">
+                        <div class="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center">
+                            <i data-lucide="package" class="text-gray-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold">${item.name}</h3>
+                            <p class="text-shoppixGold font-bold">$${item.price}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-6">
+                        <div class="flex items-center border rounded-lg bg-gray-50">
+                            <button onclick="changeQty(${item.id}, -1)" class="px-3 py-1 hover:text-shoppixGold">-</button>
+                            <span class="px-3 font-bold">${item.quantity}</span>
+                            <button onclick="changeQty(${item.id}, 1)" class="px-3 py-1 hover:text-shoppixGold">+</button>
+                        </div>
+                        <button onclick="removeFromCart(${item.id})" class="text-gray-400 hover:text-red-500 transition">
+                            <i data-lucide="trash-2" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            const total = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+            subtotalEl.textContent = `$${total.toFixed(2)}`;
+            totalEl.textContent = `$${total.toFixed(2)}`;
+            lucide.createIcons();
+        }
+
+        function changeQty(id, delta) {
+            const item = cart.find(i => i.id === id);
+            if (item) {
+                item.quantity += delta;
+                if (item.quantity <= 0) {
+                    removeFromCart(id);
+                } else {
+                    localStorage.setItem('shoppix_cart', JSON.stringify(cart));
+                    renderCart();
+                    updateCartCount();
+                }
+            }
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(i => i.id !== id);
+            localStorage.setItem('shoppix_cart', JSON.stringify(cart));
+            if (cart.length === 0) location.reload();
+            renderCart();
+            updateCartCount();
+        }
+
+        renderCart();
+        lucide.createIcons();
+    </script>
+    <!-- Minimal Footer -->
+    <footer class="bg-white border-t py-12">
+        <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="flex flex-col gap-2">
+                <a href="#" class="text-2xl font-bold">
+                    <span class="text-primary">S</span>hoppix
+                </a>
+                <div class="text-sm text-gray-500 space-y-1">
+                    <p class="flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4"></i> Shoppix@gmail.com</p>
+                    <p class="flex items-center gap-2"><i data-lucide="phone" class="w-4 h-4"></i> 124568795</p>
+                </div>
+            </div>
+            <div class="flex gap-8 text-gray-500 font-medium">
+                <a href="#" class="hover:text-primary transition">Privacy Policy</a>
+                <a href="#" class="hover:text-primary transition">Terms of Service</a>
+                <a href="mailto:shoppix@gmail.com" class="hover:text-primary transition">Support</a>
+            </div>
+            <p class="text-gray-400 text-sm">&copy; 2026 Shoppix. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+
+</html>

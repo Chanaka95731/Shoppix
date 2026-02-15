@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop | Shoppix</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body class="text-gray-900">
+    <!-- Header (Same as index) -->
+    <nav id="main-nav" class="fixed w-full z-50 transition-all duration-300 py-4 bg-white shadow-sm">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold text-black flex items-center gap-2">
+                <span class="text-primary">S</span>hoppix
+            </a>
+            <div class="hidden md:flex space-x-8 font-medium">
+                <a href="index.html" class="hover:text-shoppixGold transition">Home</a>
+                <a href="shop.html" class="text-shoppixGold transition">Shop</a>
+                <a href="#" class="hover:text-shoppixGold transition">Categories</a>
+                <a href="#" class="hover:text-shoppixGold transition">Contact</a>
+            </div>
+            <div class="flex items-center space-x-6">
+                <button class="hover:text-shoppixGold transition"><i data-lucide="search"></i></button>
+                <a href="cart.html" class="relative hover:text-shoppixGold transition">
+                    <i data-lucide="shopping-cart"></i>
+                    <span
+                        class="cart-count absolute -top-2 -right-2 bg-shoppixGold text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
+                </a>
+                <button class="md:hidden"><i data-lucide="menu"></i></button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Shop Content -->
+    <main class="pt-32 pb-20">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
+                <div>
+                    <h1 class="text-4xl font-bold mb-2">Our Collection</h1>
+                    <p class="text-gray-500">Showing all premium products</p>
+                </div>
+                <div class="flex gap-4 w-full md:w-auto">
+                    <div class="relative flex-1 md:w-64">
+                        <i data-lucide="search"
+                            class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                        <input type="text" placeholder="Search products..."
+                            class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-hidden focus:border-shoppixGold">
+                    </div>
+                    <select class="px-4 py-2 border border-gray-200 rounded-lg focus:outline-hidden">
+                        <option>Sort by: Popularity</option>
+                        <option>Price: Low to High</option>
+                        <option>Price: High to Low</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Sidebar Filters (Hidden on Mobile) -->
+                <aside class="hidden md:block col-span-1 space-y-8">
+                    <div>
+                        <h3 class="font-bold border-b pb-4 mb-4">Categories</h3>
+                        <ul class="space-y-3 text-gray-600">
+                            <li><label class="flex items-center gap-2 cursor-pointer"><input type="checkbox"
+                                        class="accent-shoppixGold"> All Products</label></li>
+                            <li><label class="flex items-center gap-2 cursor-pointer"><input type="checkbox"
+                                        class="accent-shoppixGold"> Electronics</label></li>
+                            <li><label class="flex items-center gap-2 cursor-pointer"><input type="checkbox"
+                                        class="accent-shoppixGold"> Audio</label></li>
+                            <li><label class="flex items-center gap-2 cursor-pointer"><input type="checkbox"
+                                        class="accent-shoppixGold"> Wearables</label></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-bold border-b pb-4 mb-4">Price Range</h3>
+                        <input type="range" class="w-full accent-shoppixGold">
+                        <div class="flex justify-between text-sm mt-2 text-gray-500">
+                            <span>$0</span>
+                            <span>$1000+</span>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Product Grid -->
+                <div class="col-span-1 md:col-span-3">
+                    <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <!-- Products will be dynamically injected here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="assets/js/main.js"></script>
+    <script>
+        function renderShop() {
+            const grid = document.getElementById('product-grid');
+            const products = JSON.parse(localStorage.getItem('shoppix_products')) || [];
+
+            grid.innerHTML = products.map(p => `
+                <div class="product-card group bg-white p-4 rounded-3xl border border-gray-100 hover:border-primary transition shadow-sm">
+                    <div class="relative aspect-square bg-gray-50 rounded-2xl overflow-hidden mb-4 border border-gray-100">
+                        <img src="${(p.images && p.images[0]) || p.image || 'assets/images/placeholder.jpg'}" class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
+                        <div class="absolute top-4 right-4 z-10">
+                            <button class="bg-white/90 p-2 rounded-full shadow-sm hover:text-red-500 transition">
+                                <i data-lucide="heart" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                        <button onclick="addToCart({id: ${p.id}, name: '${p.name.replace(/'/g, "\\'")}', price: ${p.price}})"
+                            class="absolute bottom-4 left-4 right-4 bg-primary text-white py-3 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-4 group-hover:translate-y-0 font-bold shadow-lg">
+                            Add to Cart
+                        </button>
+                    </div>
+                    <div class="space-y-1">
+                        <p class="text-xs text-primary font-bold uppercase tracking-wider">${p.category}</p>
+                        <h3 class="font-bold text-lg leading-tight text-black">${p.name}</h3>
+                        <div class="flex justify-between items-center pt-2">
+                            <span class="text-xl font-black text-black">$${parseFloat(p.price).toFixed(2)}</span>
+                            <div class="flex text-primary scale-75 origin-right">
+                                <i data-lucide="star" class="fill-current w-4 h-4"></i>
+                                <i data-lucide="star" class="fill-current w-4 h-4"></i>
+                                <i data-lucide="star" class="fill-current w-4 h-4"></i>
+                                <i data-lucide="star" class="fill-current w-4 h-4"></i>
+                                <i data-lucide="star" class="fill-current w-4 h-4"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        renderShop();
+        lucide.createIcons();
+    </script>
+    <!-- Minimal Footer -->
+    <footer class="bg-white border-t py-12">
+        <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="flex flex-col gap-2">
+                <a href="#" class="text-2xl font-bold">
+                    <span class="text-primary">S</span>hoppix
+                </a>
+                <div class="text-sm text-gray-500 space-y-1">
+                    <p class="flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4"></i> Shoppix@gmail.com</p>
+                    <p class="flex items-center gap-2"><i data-lucide="phone" class="w-4 h-4"></i> 124568795</p>
+                </div>
+            </div>
+            <div class="flex gap-8 text-gray-500 font-medium">
+                <a href="#" class="hover:text-primary transition">Privacy Policy</a>
+                <a href="#" class="hover:text-primary transition">Terms of Service</a>
+                <a href="mailto:shoppix@gmail.com" class="hover:text-primary transition">Support</a>
+            </div>
+            <p class="text-gray-400 text-sm">&copy; 2026 Shoppix. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+
+</html>
